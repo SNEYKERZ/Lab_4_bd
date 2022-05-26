@@ -70,16 +70,15 @@ update enrolls set grade = 0.45
 
 /* Cree un procedimiento create_teaches que automáticamente agregue un registro a teaches. Este recibe dos argumentos un identificador de instructor instructor_id y un identificador de course_id. Se asume que ambos existen en la base de datos. 
 Este procedimiento debe verificar que el curso exista en la oferta de cursos. */
-CREATE OR REPLACE PROCEDURE create_teaches (instructorID INTEGER, courseID INTEGER) AS $$
-DECLARE  
+CREATE or REPLACE PROCEDURE create_teaches (instructorID INTEGER, courseID INTEGER) AS $$
+	DECLARE  
     anio INTEGER;
     semestre INTEGER;
     secID INTEGER;
-    
     BEGIN 
-    anio = (SELECT year from  course_offering WHERE courseID = course_offering.course_id);
-    semestre = (SELECT semester from  course_offering WHERE courseID = course_offering.course_id);
-    secID = (SELECT sec_id from  course_offering WHERE courseID = course_offering.course_id);
+	SELECT year into anio from course_offering WHERE courseID = course_offering.course_id;
+	SELECT semester INTO semestre from course_offering WHERE courseID = course_offering.course_id;
+    	SELECT sec_id into secID from course_offering WHERE courseID = course_offering.course_id;
 	
     INSERT INTO teaches (course_id, sec_id, semester, year, instructor_id) 
     VALUES (courseID, secID, semestre, anio, instructorID);
