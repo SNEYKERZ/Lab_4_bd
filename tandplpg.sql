@@ -70,24 +70,22 @@ update enrolls set grade = 0.45
 
 /* Cree un procedimiento create_teaches que automáticamente agregue un registro a teaches. Este recibe dos argumentos un identificador de instructor instructor_id y un identificador de course_id. Se asume que ambos existen en la base de datos. 
 Este procedimiento debe verificar que el curso exista en la oferta de cursos. */
-CREATE or REPLACE FUNCTION create_teaches (INTEGER, INTEGER) RETURNs void as $$
-DECLARE 
-	instructorID alias for $1;
-   	courseID alias for $2; 
+CREATE OR REPLACE PROCEDURE create_teaches (instructorID INTEGER, courseID INTEGER) AS $$
+DECLARE  
     anio INTEGER;
     semestre INTEGER;
     secID INTEGER;
     
-	BEGIN
-		anio = (SELECT year from  course_offering WHERE courseID = course_offering.course_id);
-		semestre = (SELECT semester from  course_offering WHERE courseID = course_offering.course_id);
-    	secID = (SELECT sec_id from  course_offering WHERE courseID = course_offering.course_id);
+    BEGIN 
+    anio = (SELECT year from  course_offering WHERE courseID = course_offering.course_id);
+    semestre = (SELECT semester from  course_offering WHERE courseID = course_offering.course_id);
+    secID = (SELECT sec_id from  course_offering WHERE courseID = course_offering.course_id);
 	
     INSERT INTO teaches (course_id, sec_id, semester, year, instructor_id) 
-    	VALUES (courseID, secID, semestre, anio, instructorID);
+    VALUES (courseID, secID, semestre, anio, instructorID);
 end;    
 $$
 LANGUAGE 'plpgsql';
 
 -- Pruebas --
-SELECT create_teaches (2, 837827);
+CALL create_teaches (2, 837827);
